@@ -30,7 +30,8 @@ def send_text(message):
             msg += "1 " + x + " = " + c + " UAH" + '\n'
         bot.send_message(message.chat.id, msg)
     elif message.text.lower() == 'продати валюту':
-        bot.send_message(message.chat.id, 'Прощай, создатель')
+        send = bot.send_message(message.chat.id, 'Введіть абревіатуру валюти купівлі')
+        bot.register_next_step_handler(send, sell_bot)
     elif message.text.lower() == 'купити валюту':
         send = bot.send_message(message.chat.id, 'Введіть абревіатуру валюти продажу')
         bot.register_next_step_handler(send, buy_bot)
@@ -46,20 +47,38 @@ def buy_bot(message):
     bot.register_next_step_handler(send, get_sell_)
 
 
+def sell_bot(message):
+    global to_buy
+    to_buy = message.text.upper()
+    send = bot.send_message(message.chat.id, 'Введіть абревіатуру валюти продажу')
+    bot.register_next_step_handler(send, get_buying_)
+
+
 def get_sell_(message):
     global to_buy
     to_buy = message.text.upper()
     send = bot.send_message(message.chat.id, 'Введіть суму')
     bot.register_next_step_handler(send, get_sum_by_selling)
 
+def get_buying_(message):
+    global to_sell
+    to_sell= message.text.upper()
+    send = bot.send_message(message.chat.id, 'Введіть суму')
+    bot.register_next_step_handler(send, get_sum_by_selling_buy)
 
 def get_sum_by_selling(message):
-    cost = float(int(message.text))
+    cost = float(message.text)
     print(to_sell)
     print(to_buy)
     print(cost)
     new_cost = cur.currency_cost_to_buy(to_sell, to_buy, cost)
-    bot.send_message(message.chat.id, 'Сума купівлі - ' + new_cost + ' ' + to_buy.upper())
+    bot.send_message(message.chat.id, 'Сума купівлі - ' + str(new_cost) + ' ' + to_buy.upper())
+
+
+def get_sum_by_selling_buy(message):
+    cost = float(message.text)
+    new_cost = cur.currency_cost_to_sell(to_sell, to_buy, cost)
+    bot.send_message(message.chat.id, 'Сума продажу - ' + str(new_cost) + ' ' + to_buy.upper())
 
 
 @bot.message_handler(content_types=['sticker'])
