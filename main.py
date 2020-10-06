@@ -1,7 +1,7 @@
 import telebot
 from telebot import types
 
-from currency_exchange.logics import Currency
+from logics import Currency
 
 bot = telebot.TeleBot('1239503641:AAGMPTQq1R1vW5bQZCi7ERzxHu5nJn3sMF4')
 
@@ -24,7 +24,7 @@ def send_text(message):
         msg = ""
         for x in Rates:
             c = str(cur.get_currency_rate(x, "uah"))
-            if (len(msg) >= 4000):
+            if len(msg) >= 4000:
                 bot.send_message(message.chat.id, msg)
                 msg = ""
             msg += "1 " + x + " = " + c + " UAH" + '\n'
@@ -60,11 +60,13 @@ def get_sell_(message):
     send = bot.send_message(message.chat.id, 'Введіть суму')
     bot.register_next_step_handler(send, get_sum_by_selling)
 
+
 def get_buying_(message):
     global to_sell
-    to_sell= message.text.upper()
+    to_sell = message.text.upper()
     send = bot.send_message(message.chat.id, 'Введіть суму')
     bot.register_next_step_handler(send, get_sum_by_selling_buy)
+
 
 def get_sum_by_selling(message):
     cost = float(message.text)
