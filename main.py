@@ -72,7 +72,7 @@ def get_sum_by_selling(message):
     print(to_buy)
     print(cost)
     new_cost = cur.currency_cost_to_buy(to_sell, to_buy, cost)
-    bot.send_message(message.chat.id, 'Сума купівлі - ' + str(new_cost) + ' ' + to_buy.upper())
+    bot.send_message(message.chat.id, 'Сума купівлі - ' + str(new_cost) + ' ' + to_sell.upper())
 
 
 def get_sum_by_selling_buy(message):
